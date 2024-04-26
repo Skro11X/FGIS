@@ -19,19 +19,22 @@ import java.util.List;
 import java.util.Map;
 
 public class WorkWithExcel {
+    Workbook workbook;
+    Map<Integer, List<String>> data = new HashMap<>();
+    String path;
+    int lenght;
     public static void main(String[] arg) {
         WorkWithExcel exceltry = new WorkWithExcel("D:\\1.xlsx");
         System.out.println("Курва почекай");
-        System.out.println(exceltry.pochekai());
+        exceltry.valueLoaded(3);
+        exceltry.setChanges();
+        //System.out.println(exceltry.pochekai());
     }
-
-    Map<Integer, List<String>> data = new HashMap<>();
-    Sheet sheet;
-    String path;
-
-    //todo добавить в перебор
     public WorkWithExcel(String filePath) {
         this.path = filePath;
+        try (FileInputStream file = new FileInputStream(path)){
+            this.workbook = WorkbookFactory.create(file);
+        }catch (IOException e){}
         try {
             FileInputStream file = new FileInputStream(new File(this.path));
             XSSFWorkbook workbook = new XSSFWorkbook(file);
@@ -60,6 +63,7 @@ public class WorkWithExcel {
                 }
                 i++;
             }
+            lenght = i;
         } catch (IOException e) {
             System.out.println("не повезло" + e.toString());
         }
@@ -67,35 +71,23 @@ public class WorkWithExcel {
 
     public String pochekai() {
         String str = new String();
-        try {
-            FileInputStream file = new FileInputStream(path);
-            Workbook workbook = WorkbookFactory.create(file);
             for (List<String> row : this.data.values()) {
                 int col_index = 0;
                 for (String datarow : row) {
-                    if (col_index == 2) {
-                        //datarow.setCellValue("sdasdasdsadsadsasd");
-                        //ааааааааааааааааааааааа
-                        Sheet temp = workbook.getSheetAt(0);
-                        Row myRow = temp.getRow(0);
-                        Cell myCel = myRow.createCell(47);
-                        myCel.setCellValue("s12321");
-                        //temp.getRow(0).createCell(47, CellType.STRING);
-                    }
                     str += datarow.toString() + "\n";
                     col_index++;
-
                 }
                 col_index = 0;
             }
-            file.close();
-            FileOutputStream fileOut = new FileOutputStream(path);
-            workbook.write(fileOut);
-            workbook.close();
-            fileOut.close();
-        } catch (IOException e) {
-            System.out.println("не написал" + e.toString());
-        }
         return str;
+    }
+    public void valueLoaded(int row){
+        this.workbook.getSheetAt(0).getRow(row).createCell(47).setCellValue("Заполнено");
+    }
+    public void setChanges(){
+        try (FileOutputStream file = new FileOutputStream(path)){
+            this.workbook.write(file);
+        }catch (IOException e){
+        }
     }
 }

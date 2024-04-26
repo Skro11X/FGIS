@@ -9,16 +9,13 @@ public class LoginPage {
     /**
      * конструктор класса, занимающийся инициализацией полей класса
      */
-    public WorkWithExcel excelFile;
+
     public WebDriver driver;
-    public LoginPage(WebDriver driver, String fileExcelPath) {
+    public LoginPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
-        this.excelFile = new WorkWithExcel(fileExcelPath);
     }
-    /**
-     * определение локатора поля ввода логина
-     */
+
     private void myWiat(int sec){
         try {
             Thread.sleep(sec*1000); // Задержка в 1 секунду
@@ -49,11 +46,9 @@ public class LoginPage {
         clickable = driver.findElement(By.xpath("/html/body/esia-root/esia-modal/div/div[2]/div/ng-component/div/div[2]/button"));
         clickable.click();
         myWiat(5);
-
         clickable = driver.findElement(By.xpath("html/body/div/div/form/button[2]"));
         clickable.click();
         myWiat(1);
-
         clickable = driver.findElement(By.xpath("//*[@id=\"app-wrapper\"]/div[1]/div/div[1]/div/div/div[2]/div/div[2]/div/button"));
         clickable.click();
         myWiat(5);
